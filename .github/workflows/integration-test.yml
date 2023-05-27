@@ -114,7 +114,7 @@ jobs:
       - name: Install  Shell
         run: |
           #source linkis-dist/bin/install-linkis-to-kubernetes.sh
-          ./linkis-dist/bin/install-linkis-to-kubernetes.sh install -l
+          sh -v ./linkis-dist/bin/install-linkis-to-kubernetes.sh  install -l
 #  ./bin/install-linkis-to-kubernetes.sh install -l -mghcr.dockerproxy.com
 
 #      - name: Setup Minikube
