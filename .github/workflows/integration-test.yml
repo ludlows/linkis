@@ -117,6 +117,13 @@ jobs:
           sh -v ./linkis-dist/bin/install-linkis-to-kubernetes.sh  install -l
           watch -n 2 "kubectl get pods -A"
 
+          n=0
+          while (($n<10))
+          do
+            kubectl get pods -A
+            n=$((n+1))
+            sleep 5
+          done
 #  ./bin/install-linkis-to-kubernetes.sh install -l -mghcr.dockerproxy.com
 
 #      - name: Setup Minikube
