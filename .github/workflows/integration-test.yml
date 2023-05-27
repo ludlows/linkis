@@ -114,7 +114,7 @@ jobs:
       - name: Install  Shell
         run: |
 
-          sh -v ./linkis-dist/bin/install-linkis-to-kubernetes.sh  install -l
+          sh -v ./linkis-dist/bin/install-linkis-to-kubernetes.sh  pull-install -l
 
           n=0
           while (($n<10))
