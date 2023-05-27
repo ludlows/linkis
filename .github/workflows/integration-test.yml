@@ -111,6 +111,12 @@ jobs:
           config: ${{ env.KIND_CONFIG_PATH }}
           node_image: ${{ matrix.kubernetes-version }}
 
+      - name: Install  Shell
+        run: |
+          #source linkis-dist/bin/install-linkis-to-kubernetes.sh
+          ./linkis-dist/bin/install-linkis-to-kubernetes.sh install -l
+#  ./bin/install-linkis-to-kubernetes.sh install -l -mghcr.dockerproxy.com
+
 #      - name: Setup Minikube
 #        run: |
 #          # https://minikube.sigs.k8s.io/docs/start/
