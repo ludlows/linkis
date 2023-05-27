@@ -24,16 +24,16 @@ HELM_RELEASE_NAME=${2:-linkis-demo}
 LOCAL_MODE=${3:-true}
 USING_KIND=${4:-false}
 
-if [ "X${HELM_DEBUG}" == "Xtrue" ]; then
+if [ "${HELM_DEBUG}" == "true" ]; then
   # template helm charts
   helm template --namespace ${KUBE_NAMESPACE} -f ${LINKIS_CHART_DIR}/values.yaml ${HELM_RELEASE_NAME} ${LINKIS_CHART_DIR}
 else
   # create hadoop configs
-  if [ "X${WITH_LDH}" == "Xtrue" ]; then
+  if [ "${WITH_LDH}" == "true" ]; then
     kubectl apply -n ${KUBE_NAMESPACE} -f ${RESOURCE_DIR}/ldh/configmaps
   fi
   # load image
-  if [ "X${USING_KIND}" == "Xtrue" ]; then
+  if [ "${USING_KIND}" == "true" ]; then
     echo "# Loading Linkis image ..."
     kind load docker-image linkis:${LINKIS_IMAGE_TAG} --name ${KIND_CLUSTER_NAME}
     kind load docker-image linkis-web:${LINKIS_IMAGE_TAG} --name ${KIND_CLUSTER_NAME}
