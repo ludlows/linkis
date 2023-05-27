@@ -106,7 +106,6 @@ jobs:
 #        run: ct lint --config ${{ env.CT_CONFIG_PATH }}
 
       - name: Create Kind cluster
-        if: ${{ steps.list-changed.outputs.changed == 'true' }}
         uses: ./.github/actions/kind-action
         with:
           config: ${{ env.KIND_CONFIG_PATH }}
