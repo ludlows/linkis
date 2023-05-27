@@ -115,7 +115,6 @@ jobs:
         run: |
 
           sh -v ./linkis-dist/bin/install-linkis-to-kubernetes.sh  install -l
-          watch -n 2 "kubectl get pods -A"
 
           n=0
           while (($n<10))
