@@ -122,8 +122,8 @@ jobs:
           docker tag  ${MIRRORS}/apache/linkis/linkis:${TAG} linkis:dev
           docker tag  ${MIRRORS}/apache/linkis/linkis-web:${TAG} linkis-web:dev
           docker tag  ${MIRRORS}/apache/linkis/linkis-ldh:${TAG} linkis-ldh:dev
-          ${ROOT_DIR}/docker/scripts/make-linikis-image-with-mysql-jdbc.sh
-          docker tag linkis:with-jdbc linkis:dev
+#          ${ROOT_DIR}/docker/scripts/make-linikis-image-with-mysql-jdbc.sh
+#          docker tag linkis:with-jdbc linkis:dev
           sh ./linkis-dist/helm/scripts/create-kind-cluster.sh \
               && sh ./linkis-dist/helm/scripts/install-mysql.sh \
               && sh ./linkis-dist/helm/scripts/install-ldh.sh \
