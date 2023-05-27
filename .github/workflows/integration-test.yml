@@ -116,6 +116,9 @@ jobs:
           ROOT_DIR=./linkis-dist/
           MIRRORS="ghcr.io"
           TAG="latest"
+          docker pull ${MIRRORS}/apache/linkis/linkis-ldh:${TAG}
+          docker pull ${MIRRORS}/apache/linkis/linkis:${TAG}
+          docker pull ${MIRRORS}/apache/linkis/linkis-web:${TAG}
           docker tag  ${MIRRORS}/apache/linkis/linkis:${TAG} linkis:dev
           docker tag  ${MIRRORS}/apache/linkis/linkis-web:${TAG} linkis-web:dev
           docker tag  ${MIRRORS}/apache/linkis/linkis-ldh:${TAG} linkis-ldh:dev
