@@ -136,12 +136,17 @@ jobs:
           cp -r linkis-dist/package/lib1 linkis-dist/package/lib
           # 开启proxy 端口映射
           echo "开启proxy 端口映射"
-          bash ./linkis-dist/helm/scripts/remote-proxy.sh start
+          #bash ./linkis-dist/helm/scripts/remote-proxy.sh start
+          # test
+          POD_NAME=`kubectl get pods -n linkis  -l app.kubernetes.io/instance=linkis-demo-mg-gateway -o jsonpath='{.items[0].metadata.name}'`
+          kubectl port-forward -n linkis pod/${POD_NAME} 19002:9001  >/dev/null &
           # 查看proxy 端口映射
           echo "查看proxy 端口映射"
           bash ./linkis-dist/helm/scripts/remote-proxy.sh list
+          #echo 1 | curl -vvv http://127.0.0.1:8088
+          #echo 2 | curl -vvv http://127.0.0.1:20303
           # 执行shell测试
-          bash ./linkis-dist/package/bin/linkis-cli  --gatewayUrl http://127.0.0.1:19001 -engineType shell-1 -codeType shell -code "echo \"hello\" "
+          bash ./linkis-dist/package/bin/linkis-cli  --gatewayUrl http://127.0.0.1:19002 -engineType shell-1 -codeType shell -code "echo \"hello\" "
           #执行python测试
-          bash ./linkis-dist/package/bin/linkis-cli  --gatewayUrl http://127.0.0.1:19001 -engineType python-python2 -codeType python -code "print(\"hello\")"
+          bash ./linkis-dist/package/bin/linkis-cli  --gatewayUrl http://127.0.0.1:19002 -engineType python-python2 -codeType python -code "print(\"hello\")"
         shell: bash
