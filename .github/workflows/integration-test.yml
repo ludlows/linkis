@@ -125,7 +125,6 @@ jobs:
           sh ./linkis-dist/helm/scripts/install-mysql.sh  true\
               && sh ./linkis-dist/helm/scripts/install-ldh.sh true \
               && sh ./linkis-dist/helm/scripts/install-charts-with-ldh.sh linkis linkis-demo true
-
           n=0
           while (($n<10))
           do
