@@ -75,16 +75,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-#      - name: Build frontend by node.js
-#        run: |
-#          cd linkis-web
-#          sed -i "/VUE_APP_MN_CONFIG_PREFIX/d" .env
-#          npm install
-#          npm run build
-#
-#      - name: Build backend by maven
-#        run: |
-#          ./mvnw install -Pdocker -Dmaven.javadoc.skip=true -Dmaven.test.skip=true -Dlinkis.build.web=true -Dlinkis.build.with.jdbc=true -Dlinkis.build.ldh=true
+      - name: Build frontend by node.js
+        run: |
+          cd linkis-web
+          sed -i "/VUE_APP_MN_CONFIG_PREFIX/d" .env
+          npm install
+          npm run build
+
+      - name: Build backend by maven
+        run: |
+          ./mvnw install -Pdocker -Dmaven.javadoc.skip=true -Dmaven.test.skip=true -Dlinkis.build.web=true -Dlinkis.build.with.jdbc=true -Dlinkis.build.ldh=true
 
 
       - name: Set up chart-testing
@@ -116,9 +116,9 @@ jobs:
           ROOT_DIR=./linkis-dist/
           MIRRORS="ghcr.io"
           TAG="latest"
-          docker pull ${MIRRORS}/apache/linkis/linkis-ldh:${TAG}
-          docker pull ${MIRRORS}/apache/linkis/linkis:${TAG}
-          docker pull ${MIRRORS}/apache/linkis/linkis-web:${TAG}
+#          docker pull ${MIRRORS}/apache/linkis/linkis-ldh:${TAG}
+#          docker pull ${MIRRORS}/apache/linkis/linkis:${TAG}
+#          docker pull ${MIRRORS}/apache/linkis/linkis-web:${TAG}
           docker tag  ${MIRRORS}/apache/linkis/linkis:${TAG} linkis:dev
           docker tag  ${MIRRORS}/apache/linkis/linkis-web:${TAG} linkis-web:dev
           docker tag  ${MIRRORS}/apache/linkis/linkis-ldh:${TAG} linkis-ldh:dev
@@ -126,7 +126,7 @@ jobs:
               && bash ./linkis-dist/helm/scripts/install-ldh.sh true \
               && bash ./linkis-dist/helm/scripts/install-charts-with-ldh.sh linkis linkis-demo true
           n=0
-          while (($n<10))
+          while (($n<5))
           do
             kubectl get pods -A
             n=$((n+1))
@@ -140,8 +140,9 @@ jobs:
           bash ./linkis-dist/helm/scripts/remote-proxy.sh start
           # 查看proxy 端口映射
           bash ./linkis-dist/helm/scripts/remote-proxy.sh list
+
           # 执行shell测试
-          bash ./linkis-dist/package/bin/linkis-cli -engineType shell-1 -codeType shell -code "echo "hello" "  -submitUser hadoop -proxyUser hadoop
+          bash ./linkis-dist/target/apache-linkis-*-bin/package/bin/linkis-cli -engineType shell-1 -codeType shell -code "echo "hello" "  -submitUser hadoop -proxyUser hadoop
           #执行python测试
-          bash ./linkis-dist/package/bin/linkis-cli -engineType python-python2 -codeType python -code "print(\"hello\")"  -submitUser hadoop -proxyUser hadoop  -confMap  python.version=python
+          bash ./linkis-dist/target/apache-linkis-*-bin/package/bin/linkis-cli -engineType python-python2 -codeType python -code "print(\"hello\")"  -submitUser hadoop -proxyUser hadoop  -confMap  python.version=python
         shell: bash
