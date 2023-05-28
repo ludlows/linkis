@@ -126,7 +126,7 @@ jobs:
               && bash ./linkis-dist/helm/scripts/install-ldh.sh true \
               && bash ./linkis-dist/helm/scripts/install-charts-with-ldh.sh linkis linkis-demo true
           n=0
-          while (($n<10))
+          while (($n<100))
           do
             kubectl get pods -A
             n=$((n+1))
