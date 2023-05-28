@@ -132,4 +132,4 @@ jobs:
             n=$((n+1))
             sleep 5
           done
-
+        shell: bash
