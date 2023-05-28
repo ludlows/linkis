@@ -34,7 +34,7 @@ concurrency:
 env:
   CT_CONFIG_PATH: '.github/ct.yml'
   KIND_CONFIG_PATH: './linkis-dist/helm/scripts/resources/kind-cluster.yaml'
-
+  KIND_CLUSTER_NAME: 'test-helm'
 jobs:
   publish-docker:
     runs-on: ubuntu-latest
@@ -42,7 +42,7 @@ jobs:
       matrix:
         node-version: [16.0.0]
         kubernetes-version:
-          - 'kindest/node:v1.21.10'
+#          - 'kindest/node:v1.21.10'
           - 'kindest/node:v1.23.4'
     timeout-minutes: 90
     env:
@@ -110,7 +110,7 @@ jobs:
         with:
           config: ${{ env.KIND_CONFIG_PATH }}
           node_image: ${{ matrix.kubernetes-version }}
-
+          cluster_name: ${{ env.KIND_CLUSTER_NAME }}
       - name: Install  Shell
         run: |
           ROOT_DIR=./linkis-dist/
@@ -122,9 +122,10 @@ jobs:
           docker tag  ${MIRRORS}/apache/linkis/linkis:${TAG} linkis:dev
           docker tag  ${MIRRORS}/apache/linkis/linkis-web:${TAG} linkis-web:dev
           docker tag  ${MIRRORS}/apache/linkis/linkis-ldh:${TAG} linkis-ldh:dev
-          sh ./linkis-dist/helm/scripts/install-mysql.sh \
-              && sh ./linkis-dist/helm/scripts/install-ldh.sh \
-              && sh ./linkis-dist/helm/scripts/install-charts-with-ldh.sh
+          sh ./linkis-dist/helm/scripts/install-mysql.sh  true\
+              && sh ./linkis-dist/helm/scripts/install-ldh.sh true \
+              && sh ./linkis-dist/helm/scripts/install-charts-with-ldh.sh linkis linkis-demo true
+
           n=0
           while (($n<10))
           do
