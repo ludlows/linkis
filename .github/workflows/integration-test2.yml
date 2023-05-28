@@ -27,9 +27,9 @@ on:
       - master
       - dev-1.4.0-integration-test
 
-concurrency:
-  group: test-${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
+#concurrency:
+#  group: test-${{ github.head_ref || github.run_id }}
+#  cancel-in-progress: true
 
 env:
   CT_CONFIG_PATH: '.github/ct.yml'
@@ -142,7 +142,7 @@ jobs:
           bash ./linkis-dist/helm/scripts/remote-proxy.sh list
 
           # 执行shell测试
-          bash ./linkis-dist/target/apache-linkis-*-bin/package/bin/linkis-cli -engineType shell-1 -codeType shell -code "echo "hello" "  -submitUser hadoop -proxyUser hadoop
+          bash ./linkis-dist/package/bin/linkis-cli -engineType shell-1 -codeType shell -code "echo "hello" "  -submitUser hadoop -proxyUser hadoop
           #执行python测试
-          bash ./linkis-dist/target/apache-linkis-*-bin/package/bin/linkis-cli -engineType python-python2 -codeType python -code "print(\"hello\")"  -submitUser hadoop -proxyUser hadoop  -confMap  python.version=python
+          bash ./linkis-dist/package/bin/linkis-cli -engineType python-python2 -codeType python -code "print(\"hello\")"  -submitUser hadoop -proxyUser hadoop  -confMap  python.version=python
         shell: bash

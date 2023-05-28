@@ -27,9 +27,9 @@ on:
       - master
       - dev-1.4.0-integration-test
 
-concurrency:
-  group: test-${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
+#concurrency:
+#  group: test-${{ github.head_ref || github.run_id }}
+#  cancel-in-progress: true
 
 env:
   CT_CONFIG_PATH: '.github/ct.yml'
