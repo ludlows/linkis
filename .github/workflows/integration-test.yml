@@ -111,7 +111,7 @@ jobs:
           config: ${{ env.KIND_CONFIG_PATH }}
           node_image: ${{ matrix.kubernetes-version }}
           cluster_name: ${{ env.KIND_CLUSTER_NAME }}
-      - name: Install  Shell
+      - name: Start Linkis Service
         run: |
           ROOT_DIR=./linkis-dist/
           MIRRORS="ghcr.io"
@@ -132,4 +132,18 @@ jobs:
             n=$((n+1))
             sleep 5
           done
+        shell: bash
+
+      - name: Linkis-Cli Test
+        run: |
+          # 进入容器
+          bash  ./linkis-dist/helm/scripts/login-pod.sh cg-engineconnmanager
+          # 执行shell测试
+          bash ./bin/linkis-cli -engineType shell-1 -codeType shell -code "echo "hello" "  -submitUser hadoop -proxyUser hadoop
+          #执行hive测试
+          bash ./bin/linkis-cli -engineType hive-2.3.3 -codeType hql -code "show tables"  -submitUser hadoop -proxyUser hadoop
+          #执行spark测试
+          bash ./bin/linkis-cli -engineType spark-2.4.3 -codeType sql -code "show tables"  -submitUser hadoop -proxyUser hadoop
+          #执行python测试
+          bash ./bin/linkis-cli -engineType python-python2 -codeType python -code "print(\"hello\")"  -submitUser hadoop -proxyUser hadoop  -confMap  python.version=python
         shell: bash
