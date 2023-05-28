@@ -139,10 +139,10 @@ jobs:
           # 开启proxy 端口映射
           bash ./linkis-dist/helm/scripts/remote-proxy.sh start
           # 查看proxy 端口映射
+          echo "查看proxy 端口映射"
           bash ./linkis-dist/helm/scripts/remote-proxy.sh list
-
           # 执行shell测试
-          bash ./linkis-dist/package/bin/linkis-cli -engineType shell-1 -codeType shell -code "echo \"hello\" "
+          bash ./linkis-dist/package/bin/linkis-cli  --gatewayUrl http://127.0.0.1:19001 -engineType shell-1 -codeType shell -code "echo \"hello\" "
           #执行python测试
-          bash ./linkis-dist/package/bin/linkis-cli -engineType python-python2 -codeType python -code "print(\"hello\")"
+          bash ./linkis-dist/package/bin/linkis-cli  --gatewayUrl http://127.0.0.1:19001 -engineType python-python2 -codeType python -code "print(\"hello\")"
         shell: bash
