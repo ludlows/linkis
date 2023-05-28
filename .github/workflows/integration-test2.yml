@@ -142,7 +142,7 @@ jobs:
           bash ./linkis-dist/helm/scripts/remote-proxy.sh list
 
           # 执行shell测试
-          bash ./linkis-dist/package/bin/linkis-cli -engineType shell-1 -codeType shell -code "echo "hello" "  -submitUser hadoop -proxyUser hadoop
+          bash ./linkis-dist/package/bin/linkis-cli -engineType shell-1 -codeType shell -code "echo \"hello\" "
           #执行python测试
-          bash ./linkis-dist/package/bin/linkis-cli -engineType python-python2 -codeType python -code "print(\"hello\")"  -submitUser hadoop -proxyUser hadoop  -confMap  python.version=python
+          bash ./linkis-dist/package/bin/linkis-cli -engineType python-python2 -codeType python -code "print(\"hello\")"
         shell: bash
