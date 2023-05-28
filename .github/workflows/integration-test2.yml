@@ -1,0 +1,148 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+name: Integration Test2
+
+on:
+  push:
+    branches:
+      - master
+      - dev-1.4.0-integration-test
+  pull_request:
+    branches:
+      - master
+      - dev-1.4.0-integration-test
+
+concurrency:
+  group: test-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+env:
+  CT_CONFIG_PATH: '.github/ct.yml'
+  KIND_CONFIG_PATH: './linkis-dist/helm/scripts/resources/kind-cluster.yaml'
+  KIND_CLUSTER_NAME: 'test-helm'
+jobs:
+  publish-docker:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.0.0]
+        kubernetes-version:
+#          - 'kindest/node:v1.21.10'
+          - 'kindest/node:v1.23.4'
+    timeout-minutes: 90
+    env:
+      TAG: ${{ github.sha }}
+      SKIP_TEST: true
+      HUB: ghcr.io/apache/linkis
+      LINKIS_VERSION: 1.4.0-SNAPSHOT
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: true
+      - name: Set up JDK 8
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: 8
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+#      - name: Build frontend by node.js
+#        run: |
+#          cd linkis-web
+#          sed -i "/VUE_APP_MN_CONFIG_PREFIX/d" .env
+#          npm install
+#          npm run build
+#
+#      - name: Build backend by maven
+#        run: |
+#          ./mvnw install -Pdocker -Dmaven.javadoc.skip=true -Dmaven.test.skip=true -Dlinkis.build.web=true -Dlinkis.build.with.jdbc=true -Dlinkis.build.ldh=true
+
+
+      - name: Set up chart-testing
+        uses: ./.github/actions/chart-testing-action
+
+#      - name: List changed charts
+#        id: list-changed
+#        run: |
+#          changed=$(ct list-changed --config ${{ env.CT_CONFIG_PATH }} --target-branch ${{ github.event.repository.default_branch }})
+#          if [[ -n "$changed" ]]; then
+#            echo "changed=true" >> $GITHUB_OUTPUT
+#            echo "Changed charts: $changed"
+#          else
+#            echo "Charts are not changed, they will not be linted, validated, installed and tested."
+#          fi
+
+#      # NOTE: If the charts have not changed, they will not be linted, validated, installed and tested.
+#      - name: Lint and validate charts
+#        run: ct lint --config ${{ env.CT_CONFIG_PATH }}
+
+      - name: Create Kind cluster
+        uses: ./.github/actions/kind-action
+        with:
+          config: ${{ env.KIND_CONFIG_PATH }}
+          node_image: ${{ matrix.kubernetes-version }}
+          cluster_name: ${{ env.KIND_CLUSTER_NAME }}
+      - name: Start Linkis Service
+        run: |
+          ROOT_DIR=./linkis-dist/
+          MIRRORS="ghcr.io"
+          TAG="latest"
+          docker pull ${MIRRORS}/apache/linkis/linkis-ldh:${TAG}
+          docker pull ${MIRRORS}/apache/linkis/linkis:${TAG}
+          docker pull ${MIRRORS}/apache/linkis/linkis-web:${TAG}
+          docker tag  ${MIRRORS}/apache/linkis/linkis:${TAG} linkis:dev
+          docker tag  ${MIRRORS}/apache/linkis/linkis-web:${TAG} linkis-web:dev
+          docker tag  ${MIRRORS}/apache/linkis/linkis-ldh:${TAG} linkis-ldh:dev
+          bash ./linkis-dist/helm/scripts/install-mysql.sh  true\
+              && bash ./linkis-dist/helm/scripts/install-ldh.sh true \
+              && bash ./linkis-dist/helm/scripts/install-charts-with-ldh.sh linkis linkis-demo true
+          n=0
+          while (($n<5))
+          do
+            kubectl get pods -A
+            n=$((n+1))
+            sleep 5
+          done
+        shell: bash
+
+      - name: Linkis-Cli Test
+        run: |
+          # 开启proxy 端口映射
+          bash ./linkis-dist/helm/scripts/remote-proxy.sh start
+          # 查看proxy 端口映射
+          bash ./linkis-dist/helm/scripts/remote-proxy.sh list
+
+          # 执行shell测试
+          bash ./linkis-dist/target/apache-linkis-*-bin/package/bin/linkis-cli -engineType shell-1 -codeType shell -code "echo "hello" "  -submitUser hadoop -proxyUser hadoop
+          #执行python测试
+          bash ./linkis-dist/target/apache-linkis-*-bin/package/bin/linkis-cli -engineType python-python2 -codeType python -code "print(\"hello\")"  -submitUser hadoop -proxyUser hadoop  -confMap  python.version=python
+        shell: bash
