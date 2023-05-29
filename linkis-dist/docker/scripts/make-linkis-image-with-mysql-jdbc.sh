@@ -20,7 +20,7 @@ WORK_DIR=`cd $(dirname $0); pwd -P`
 . ${WORK_DIR}/utils.sh
 
 IMAGE_NAME=${IMAGE_NAME:-linkis:with-jdbc}
-LINKIS_IMAGE=${LINKIS_IMAGE:-linkis:dev}
+LINKIS_IMAGE=${LINKIS_IMAGE:-linkis:latest}
 LINKIS_HOME=${LINKIS_HOME:-/opt/linkis}
 MYSQL_JDBC_VERSION=${MYSQL_JDBC_VERSION:-8.0.28}
 MYSQL_JDBC_FILENAME=mysql-connector-java-${MYSQL_JDBC_VERSION}.jar

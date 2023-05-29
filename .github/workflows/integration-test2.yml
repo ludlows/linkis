@@ -110,6 +110,7 @@ jobs:
           #docker tag  ${MIRRORS}/apache/linkis/linkis:${TAG} linkis:dev
           docker tag  ${MIRRORS}/apache/linkis/linkis-web:${TAG} linkis-web:dev
           docker tag  ${MIRRORS}/apache/linkis/linkis-ldh:${TAG} linkis-ldh:dev
+
           #启动容器服务
           bash ./linkis-dist/helm/scripts/install-mysql.sh  true\
               && bash ./linkis-dist/helm/scripts/install-ldh.sh true \
