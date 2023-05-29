@@ -117,15 +117,16 @@ jobs:
               && bash ./linkis-dist/helm/scripts/install-charts-with-ldh.sh linkis linkis-demo true
           #等待服务启动成功
           n=0
-          while (($n<20))
+          sleep 60
+          while (($n<5))
           do
             kubectl get pods -A
             n=$((n+1))
             sleep 10
           done
           #打印日志
-          bash ./linkis-dist/helm/scripts/logs-pod.sh cg-linkismanager
-          bash ./linkis-dist/helm/scripts/logs-pod.sh cg-engineconnmanager
+#          bash ./linkis-dist/helm/scripts/logs-pod.sh cg-linkismanager
+#          bash ./linkis-dist/helm/scripts/logs-pod.sh cg-engineconnmanager
           #临时使用client lib包 后续主动构建后需要调整
           echo "cp -r linkis-dist/package/lib1 linkis-dist/package/lib"
           cp -r linkis-dist/package/lib1 linkis-dist/package/lib
