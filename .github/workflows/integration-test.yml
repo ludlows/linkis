@@ -20,10 +20,10 @@ name: Integration Test
 on:
   push:
     branches:
-      - dev-1.4.0-integration-test
+      - dev-1.4.0-integration-test2
   pull_request:
     branches:
-      - dev-1.4.0-integration-test
+      - dev-1.4.0-integration-test2
 
 #concurrency:
 #  group: test-${{ github.head_ref || github.run_id }}
@@ -81,8 +81,7 @@ jobs:
 
       - name: Build backend by maven
         run: |
-          ./mvnw install -Pdocker -Dmaven.javadoc.skip=true -Dmaven.test.skip=true -Dlinkis.build.web=true -Dlinkis.build.with.jdbc=true -Dlinkis.build.ldh=true
-
+          ./mvnw install -Pdocker -Dmysql.connector.scope=provided -Dmaven.javadoc.skip=true -Dmaven.test.skip=true -Dlinkis.build.web=true -Dlinkis.build.ldh=true
 
       - name: Set up chart-testing
         uses: ./.github/actions/chart-testing-action
@@ -94,23 +93,23 @@ jobs:
           config: ${{ env.KIND_CONFIG_PATH }}
           node_image: ${{ matrix.kubernetes-version }}
           cluster_name: ${{ env.KIND_CLUSTER_NAME }}
+
       - name: Start Linkis Service
         run: |
-          ROOT_DIR=./linkis-dist/
-          MIRRORS="ghcr.io"
-          TAG="latest"
-          docker tag  ${MIRRORS}/apache/linkis/linkis:${TAG} linkis:dev
-          docker tag  ${MIRRORS}/apache/linkis/linkis-web:${TAG} linkis-web:dev
-          docker tag  ${MIRRORS}/apache/linkis/linkis-ldh:${TAG} linkis-ldh:dev
+          docker tag linkis:${{ env.LINKIS_VERSION }}     linkis:dev
+          docker tag linkis-web:${{ env.LINKIS_VERSION }} linkis-web:dev
+          docker tag linkis-ldh:${{ env.LINKIS_VERSION }} linkis-ldh:dev
+
           bash ./linkis-dist/helm/scripts/install-mysql.sh  true\
               && bash ./linkis-dist/helm/scripts/install-ldh.sh true \
               && bash ./linkis-dist/helm/scripts/install-charts-with-ldh.sh linkis linkis-demo true
           n=0
-          while (($n<5))
+          sleep 60
+          while (($n<10))
           do
             kubectl get pods -A
             n=$((n+1))
-            sleep 5
+            sleep 20
           done
         shell: bash
 
