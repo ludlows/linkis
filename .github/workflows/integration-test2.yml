@@ -101,7 +101,7 @@ jobs:
           MIRRORS="ghcr.io"
           TAG="latest"
           docker pull ${MIRRORS}/apache/linkis/linkis-ldh:${TAG}
-          docker pull ${MIRRORS}/apache/linkis/linkis:${TAG}
+          docker pull ghcr.io/apache/linkis/linkis:${TAG}
           docker pull ${MIRRORS}/apache/linkis/linkis-web:${TAG}
           #添加mysql 驱动
           bash -v ${ROOT_DIR}/docker/scripts/make-linkis-image-with-mysql-jdbc.sh
