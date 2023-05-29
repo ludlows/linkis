@@ -104,7 +104,7 @@ jobs:
           docker pull ${MIRRORS}/apache/linkis/linkis:${TAG}
           docker pull ${MIRRORS}/apache/linkis/linkis-web:${TAG}
           #添加mysql 驱动
-          ${ROOT_DIR}/docker/scripts/make-linkis-image-with-mysql-jdbc.sh
+          bash -v ${ROOT_DIR}/docker/scripts/make-linkis-image-with-mysql-jdbc.sh
           #重新打tag
           docker tag linkis:with-jdbc linkis:dev
           #docker tag  ${MIRRORS}/apache/linkis/linkis:${TAG} linkis:dev
