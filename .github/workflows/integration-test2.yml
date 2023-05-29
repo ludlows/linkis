@@ -36,7 +36,7 @@ env:
   KIND_CONFIG_PATH: './linkis-dist/helm/scripts/resources/kind-cluster.yaml'
   KIND_CLUSTER_NAME: 'test-helm'
 jobs:
-  publish-docker:
+  integration-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -125,6 +125,7 @@ jobs:
           bash ./linkis-dist/helm/scripts/install-mysql.sh  true\
               && bash ./linkis-dist/helm/scripts/install-ldh.sh true \
               && bash ./linkis-dist/helm/scripts/install-charts-with-ldh.sh linkis linkis-demo true
+          #等待服务启动成功
           n=0
           while (($n<20))
           do

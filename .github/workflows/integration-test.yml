@@ -36,7 +36,7 @@ env:
   KIND_CONFIG_PATH: './linkis-dist/helm/scripts/resources/kind-cluster.yaml'
   KIND_CLUSTER_NAME: 'test-helm'
 jobs:
-  publish-docker:
+  integration-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
