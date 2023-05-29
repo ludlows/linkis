@@ -20,11 +20,9 @@ name: Integration Test
 on:
   push:
     branches:
-      - master
       - dev-1.4.0-integration-test
   pull_request:
     branches:
-      - master
       - dev-1.4.0-integration-test
 
 #concurrency:
@@ -32,7 +30,6 @@ on:
 #  cancel-in-progress: true
 
 env:
-  CT_CONFIG_PATH: '.github/ct.yml'
   KIND_CONFIG_PATH: './linkis-dist/helm/scripts/resources/kind-cluster.yaml'
   KIND_CLUSTER_NAME: 'test-helm'
 jobs:
@@ -90,20 +87,6 @@ jobs:
       - name: Set up chart-testing
         uses: ./.github/actions/chart-testing-action
 
-#      - name: List changed charts
-#        id: list-changed
-#        run: |
-#          changed=$(ct list-changed --config ${{ env.CT_CONFIG_PATH }} --target-branch ${{ github.event.repository.default_branch }})
-#          if [[ -n "$changed" ]]; then
-#            echo "changed=true" >> $GITHUB_OUTPUT
-#            echo "Changed charts: $changed"
-#          else
-#            echo "Charts are not changed, they will not be linted, validated, installed and tested."
-#          fi
-
-#      # NOTE: If the charts have not changed, they will not be linted, validated, installed and tested.
-#      - name: Lint and validate charts
-#        run: ct lint --config ${{ env.CT_CONFIG_PATH }}
 
       - name: Create Kind cluster
         uses: ./.github/actions/kind-action
