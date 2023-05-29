@@ -96,15 +96,21 @@ jobs:
           cluster_name: ${{ env.KIND_CLUSTER_NAME }}
       - name: Start Linkis Service
         run: |
+          #先直接下载镜像 后续调整为主动构建
           ROOT_DIR=./linkis-dist/
           MIRRORS="ghcr.io"
           TAG="latest"
           docker pull ${MIRRORS}/apache/linkis/linkis-ldh:${TAG}
           docker pull ${MIRRORS}/apache/linkis/linkis:${TAG}
           docker pull ${MIRRORS}/apache/linkis/linkis-web:${TAG}
-          docker tag  ${MIRRORS}/apache/linkis/linkis:${TAG} linkis:dev
+          #添加mysql 驱动
+          ${ROOT_DIR}/docker/scripts/make-linkis-image-with-mysql-jdbc.sh
+          #重新打tag
+          docker tag linkis:with-jdbc linkis:dev
+          #docker tag  ${MIRRORS}/apache/linkis/linkis:${TAG} linkis:dev
           docker tag  ${MIRRORS}/apache/linkis/linkis-web:${TAG} linkis-web:dev
           docker tag  ${MIRRORS}/apache/linkis/linkis-ldh:${TAG} linkis-ldh:dev
+          #启动容器服务
           bash ./linkis-dist/helm/scripts/install-mysql.sh  true\
               && bash ./linkis-dist/helm/scripts/install-ldh.sh true \
               && bash ./linkis-dist/helm/scripts/install-charts-with-ldh.sh linkis linkis-demo true
@@ -116,8 +122,10 @@ jobs:
             n=$((n+1))
             sleep 10
           done
+          #打印日志
           bash ./linkis-dist/helm/scripts/logs-pod.sh cg-linkismanager
           bash ./linkis-dist/helm/scripts/logs-pod.sh cg-engineconnmanager
+          #临时使用client lib包 后续主动构建后需要调整
           echo "cp -r linkis-dist/package/lib1 linkis-dist/package/lib"
           cp -r linkis-dist/package/lib1 linkis-dist/package/lib
           # 开启proxy 端口映射
