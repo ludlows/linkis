@@ -100,16 +100,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Build frontend by node.js
-        run: |
-          cd linkis-web
-          sed -i "/VUE_APP_MN_CONFIG_PREFIX/d" .env
-          npm install
-          npm run build
-
-      - name: Build backend by maven
-        run: |
-          ./mvnw install -Pdocker -Dmysql.connector.scope=provided -Dmaven.javadoc.skip=true -Dmaven.test.skip=true -Dlinkis.build.web=true -Dlinkis.build.ldh=true
+#      - name: Build frontend by node.js
+#        run: |
+#          cd linkis-web
+#          sed -i "/VUE_APP_MN_CONFIG_PREFIX/d" .env
+#          npm install
+#          npm run build
+#
+#      - name: Build backend by maven
+#        run: |
+#          ./mvnw install -Pdocker -Dmysql.connector.scope=provided -Dmaven.javadoc.skip=true -Dmaven.test.skip=true -Dlinkis.build.web=true -Dlinkis.build.ldh=true
 
       - name: Set up chart-testing
         uses: ./.github/actions/chart-testing-action
@@ -124,9 +124,21 @@ jobs:
 
       - name: Start Linkis Service
         run: |
-          docker tag linkis:${{ env.LINKIS_VERSION }}     linkis:dev
-          docker tag linkis-web:${{ env.LINKIS_VERSION }} linkis-web:dev
-          docker tag linkis-ldh:${{ env.LINKIS_VERSION }} linkis-ldh:dev
+          #docker tag linkis:${{ env.LINKIS_VERSION }}     linkis:dev
+          #docker tag linkis-web:${{ env.LINKIS_VERSION }} linkis-web:dev
+          #docker tag linkis-ldh:${{ env.LINKIS_VERSION }} linkis-ldh:dev
+
+          #先直接下载镜像 后续调整为主动构建
+           ROOT_DIR=./linkis-dist/
+           MIRRORS="ghcr.io"
+           TAG="dev"
+           docker pull ${MIRRORS}/apache/linkis/linkis-ldh:${TAG}
+           docker pull ${MIRRORS}/apache/linkis/linkis:${TAG}
+           docker pull ${MIRRORS}/apache/linkis/linkis-web:${TAG}
+          #重新打tag
+           docker tag  ${MIRRORS}/apache/linkis/linkis:${TAG} linkis:dev
+           docker tag  ${MIRRORS}/apache/linkis/linkis-web:${TAG} linkis-web:dev
+           docker tag  ${MIRRORS}/apache/linkis/linkis-ldh:${TAG} linkis-ldh:dev
           #查看镜像
           docker image ls
           bash ./linkis-dist/helm/scripts/install-mysql.sh  true\
