@@ -32,6 +32,7 @@ on:
 env:
   KIND_CONFIG_PATH: './linkis-dist/helm/scripts/resources/kind-cluster.yaml'
   KIND_CLUSTER_NAME: 'test-helm'
+  MAVEN_OPTS: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.http.retryHandler.class=standard -Dmaven.wagon.http.retryHandler.count=3 -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
 jobs:
   integration-test:
     runs-on: ubuntu-latest
