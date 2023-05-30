@@ -105,7 +105,8 @@ jobs:
           docker tag linkis:${{ env.LINKIS_VERSION }}     linkis:dev
           docker tag linkis-web:${{ env.LINKIS_VERSION }} linkis-web:dev
           docker tag linkis-ldh:${{ env.LINKIS_VERSION }} linkis-ldh:dev
-
+          #查看镜像
+          docker image ls
           bash ./linkis-dist/helm/scripts/install-mysql.sh  true\
               && bash ./linkis-dist/helm/scripts/install-ldh.sh true \
               && bash ./linkis-dist/helm/scripts/install-charts-with-ldh.sh linkis linkis-demo true
