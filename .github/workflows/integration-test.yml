@@ -134,7 +134,7 @@ jobs:
               && bash ./linkis-dist/helm/scripts/install-charts-with-ldh.sh linkis linkis-demo true
           n=0
           sleep 60
-          while (($n<10))
+          while (($n<15))
           do
             kubectl get pods -A
             n=$((n+1))
@@ -148,9 +148,8 @@ jobs:
           bash ./linkis-dist/helm/scripts/remote-proxy.sh start
           # 查看proxy 端口映射
           bash ./linkis-dist/helm/scripts/remote-proxy.sh list
-
           # 执行shell测试
-          bash ./linkis-dist/target/apache-linkis-*-bin/package/bin/linkis-cli --gatewayUrl http://127.0.0.1:19001 -engineType shell-1 -codeType shell -code "echo "hello" "
+          bash ./linkis-dist/target/apache-linkis-${{ env.LINKIS_VERSION }}-bin/linkis-package/bin/linkis-cli --gatewayUrl http://127.0.0.1:19001 -engineType shell-1 -codeType shell -code "echo "hello" "
           #执行python测试
-          bash ./linkis-dist/target/apache-linkis-*-bin/package/bin/linkis-cli --gatewayUrl http://127.0.0.1:19001 -engineType python-python2 -codeType python -code "print(\"hello\")"
+          bash ./linkis-dist/target/apache-linkis-${{ env.LINKIS_VERSION }}-bin/linkis-package/bin/linkis-cli --gatewayUrl http://127.0.0.1:19001 -engineType python-python2 -codeType python -code "print(\"hello\")"
         shell: bash
