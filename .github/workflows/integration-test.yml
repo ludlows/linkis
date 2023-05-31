@@ -154,9 +154,9 @@ jobs:
           done
           # 查看日志
           POD_NAME=`kubectl get pods -n linkis -l app.kubernetes.io/instance=linkis-demo-cg-linkismanager -o jsonpath='{.items[0].metadata.name}'`
-          kubectl logs -n linkis  ${POD_NAME} -f --tail=1000
+          kubectl logs -n linkis  ${POD_NAME} -f --tail=10000
           POD_NAME=`kubectl get pods -n linkis -l app.kubernetes.io/instance=linkis-demo-cg-engineconnmanager -o jsonpath='{.items[0].metadata.name}'`
-          kubectl logs -n linkis  ${POD_NAME} -f --tail=1000
+          kubectl logs -n linkis  ${POD_NAME} -f --tail=10000
 
 
         shell: bash
