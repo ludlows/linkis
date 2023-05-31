@@ -37,6 +37,8 @@ RUN yum install -y \
        mysql \
     && yum clean all
 
+RUN whoami
+
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && localedef -c -f UTF-8 -i en_US en_US.UTF-8
 ENV LANG=en_US.UTF-8 LANGUAGE=en_US:zh LC_TIME=en_US.UTF-8
@@ -53,12 +55,25 @@ ARG LINKIS_VERSION=0.0.0
 ARG LINKIS_SYSTEM_USER="hadoop"
 ARG LINKIS_SYSTEM_UID="9001"
 
+ARG RUNNER_SYSTEM_USER="runner"
+ARG RUNNER_SYSTEM_UID="8888"
+
 ARG LINKIS_HOME=/opt/linkis
 ARG LINKIS_CONF_DIR=/etc/linkis-conf
 ARG LINKIS_LOG_DIR=/var/logs/linkis
 ARG LDH_HOME=/opt/ldh
 
 WORKDIR ${LINKIS_HOME}
+
+RUN useradd -r -s /bin/bash -u ${RUNNER_SYSTEM_UID} -g root -G wheel ${RUNNER_SYSTEM_USER}
+USER ${RUNNER_SYSTEM_USER}
+RUN whoami
+WORKDIR /home/${RUNNER_SYSTEM_USER}
+
+USER root
+RUN whoami
+
+
 
 RUN useradd -r -s /bin/bash -u ${LINKIS_SYSTEM_UID} -g root -G wheel ${LINKIS_SYSTEM_USER}
 RUN sed -i "s#^%wheel.*#%wheel        ALL=(ALL)       NOPASSWD: ALL#g" /etc/sudoers
