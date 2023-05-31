@@ -109,7 +109,7 @@ jobs:
 #
 #      - name: Build backend by maven
 #        run: |
-#          ./mvnw install -Pdocker -Dmysql.connector.scope=provided -Dmaven.javadoc.skip=true -Dmaven.test.skip=true -Dlinkis.build.web=true -Dlinkis.build.ldh=true
+#          ./mvnw install -Pdocker -Dmysql.connector.scope=compile -Dmaven.javadoc.skip=true -Dmaven.test.skip=true -Dlinkis.build.web=true -Dlinkis.build.ldh=true
 
       - name: Set up chart-testing
         uses: ./.github/actions/chart-testing-action
