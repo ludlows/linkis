@@ -167,11 +167,11 @@ jobs:
           bash ./linkis-dist/helm/scripts/remote-proxy.sh list
           # 执行shell测试
           #bash ./linkis-dist/target/apache-linkis-${{ env.LINKIS_VERSION }}-bin/linkis-package/bin/linkis-cli --gatewayUrl http://127.0.0.1:19001 -engineType shell-1 -codeType shell -code "echo \"hello\" " -submitUser hadoop -proxyUser hadoop
-          bash ./linkis-dist/linkis-package/bin/linkis-cli --gatewayUrl http://127.0.0.1:19001 -engineType shell-1 -codeType shell -code "echo \"hello\" " -submitUser hadoop -proxyUser hadoop
+          bash ./linkis-dist/package/bin/linkis-cli --gatewayUrl http://127.0.0.1:19001 -engineType shell-1 -codeType shell -code "echo \"hello\" " -submitUser hadoop -proxyUser hadoop
 
           #执行python测试
           #bash ./linkis-dist/target/apache-linkis-${{ env.LINKIS_VERSION }}-bin/linkis-package/bin/linkis-cli --gatewayUrl http://127.0.0.1:19001 -engineType python-python2 -codeType python -code "print(\"hello\")" -submitUser hadoop -proxyUser hadoop
-          bash ./linkis-dist/linkis-package/bin/linkis-cli --gatewayUrl http://127.0.0.1:19001 -engineType python-python2 -codeType python -code "print(\"hello\")" -submitUser hadoop -proxyUser hadoop
+          bash ./linkis-dist/package/bin/linkis-cli --gatewayUrl http://127.0.0.1:19001 -engineType python-python2 -codeType python -code "print(\"hello\")" -submitUser hadoop -proxyUser hadoop
 
 
 
