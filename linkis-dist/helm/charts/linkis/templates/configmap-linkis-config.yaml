@@ -181,7 +181,7 @@ data:
     wds.linkis.gateway.url={{- include "linkis.gateway.url" . }}
 
     wds.linkis.multiple.yarn.cluster=false
-    linkis.discovery.prefer-ip-address=false
+    linkis.discovery.prefer-ip-address=true
     linkis.discovery.server-address={{- include "linkis.registration.url" . }}
 
     ##mybatis
