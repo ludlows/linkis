@@ -80,9 +80,13 @@ data:
     eureka:
       instance:
         prefer-ip-address: true
+        #instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
+        lease-renewal-interval-in-seconds: 4
+        lease-expiration-duration-in-seconds: 12
       client:
         serviceUrl:
           defaultZone: {{- include "linkis.registration.url" . | quote | indent 1 }}
+        registry-fetch-interval-seconds: 8
     management:
       endpoints:
         web:
@@ -118,8 +122,8 @@ data:
       port: {{ .Values.mgEureka.port }}
     eureka:
       instance:
-        hostname: localhost
         preferIpAddress: true
+        hostname: localhost
       client:
         register-with-eureka: false
         fetch-registry: false
@@ -175,7 +179,11 @@ data:
     wds.linkis.server.version=v1
     ##spring conf
     wds.linkis.gateway.url={{- include "linkis.gateway.url" . }}
-    wds.linkis.eureka.defaultZone={{- include "linkis.registration.url" . }}
+
+    wds.linkis.multiple.yarn.cluster=false
+    linkis.discovery.prefer-ip-address=false
+    linkis.discovery.server-address={{- include "linkis.registration.url" . }}
+
     ##mybatis
     wds.linkis.server.mybatis.datasource.url={{- include "linkis.datasource.url" . }}
     wds.linkis.server.mybatis.datasource.username={{ .Values.linkis.datasource.username }}
