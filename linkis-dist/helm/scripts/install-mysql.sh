@@ -19,6 +19,7 @@ WORK_DIR=`cd $(dirname $0); pwd -P`
 
 . ${WORK_DIR}/common.sh
 
+USING_KIND=${1:-false}
 MYSQL_VERSION=${MYSQL_VERSION:-5.7}
 
 set -e
