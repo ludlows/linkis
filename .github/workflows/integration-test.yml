@@ -141,12 +141,12 @@ jobs:
            docker tag  ${MIRRORS}/apache/linkis/linkis-ldh:${TAG} linkis-ldh:dev
           #查看镜像
           docker image ls
-          bash ./linkis-dist/helm/scripts/install-mysql.sh  true\
+          bash ./linkis-dist/helm/scripts/install-mysql.sh  false\
               && bash ./linkis-dist/helm/scripts/install-ldh.sh true \
               && bash ./linkis-dist/helm/scripts/install-charts-with-ldh.sh linkis linkis-demo true
           n=0
           sleep 60
-          while (($n<15))
+          while (($n<10))
           do
             kubectl get pods -A
             n=$((n+1))
