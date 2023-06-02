@@ -147,6 +147,8 @@ data:
           file-size-threshold: 50MB
     eureka:
       instance:
+        prefer-ip-address: true
+        instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
         lease-renewal-interval-in-seconds: 4
         lease-expiration-duration-in-seconds: 12
       client:
