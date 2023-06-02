@@ -165,19 +165,15 @@ jobs:
           bash ./linkis-dist/helm/scripts/remote-proxy.sh start
           # 查看proxy 端口映射
           bash ./linkis-dist/helm/scripts/remote-proxy.sh list
+          # 查看web是否可用
+          curl http://127.0.0.1:19001/indexhtml
+
           # 执行shell测试
           POD_NAME=`kubectl get pods -n linkis -l app.kubernetes.io/instance=linkis-demo-mg-gateway -o jsonpath='{.items[0].metadata.name}'`
           kubectl exec -it -n linkis  ${POD_NAME} -- bash -c " \
           sh /opt/linkis/bin/linkis-cli -engineType shell-1 -codeType shell -code \"pwd\" ";
 
-
-          #bash ./linkis-dist/target/apache-linkis-${{ env.LINKIS_VERSION }}-bin/linkis-package/bin/linkis-cli --gatewayUrl http://127.0.0.1:19001 -engineType shell-1 -codeType shell -code "echo \"hello\" " -submitUser hadoop -proxyUser hadoop
-          bash ./linkis-dist/package/bin/linkis-cli --gatewayUrl http://127.0.0.1:19001 -engineType shell-1 -codeType shell -code "echo \"hello\" " -submitUser runner -proxyUser hadoop
-
-          #执行python测试
-          #bash ./linkis-dist/target/apache-linkis-${{ env.LINKIS_VERSION }}-bin/linkis-package/bin/linkis-cli --gatewayUrl http://127.0.0.1:19001 -engineType python-python2 -codeType python -code "print(\"hello\")" -submitUser hadoop -proxyUser hadoop
-          bash ./linkis-dist/package/bin/linkis-cli --gatewayUrl http://127.0.0.1:19001 -engineType python-python2 -codeType python -code "print(\"hello\")" -submitUser runner -proxyUser hadoop
-
-
+          kubectl exec -it -n linkis  ${POD_NAME} -- bash -c " \
+          sh /opt/linkis/bin/linkis-cli -engineType python-python2 -codeType python -code   'print(\"hello\")' "
 
         shell: bash
