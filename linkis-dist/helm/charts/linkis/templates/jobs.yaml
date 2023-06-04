@@ -22,9 +22,19 @@ metadata:
 spec:
   template:
     spec:
+      volumes:
+        - name: init-db
+          configMap:
+            name: {{ include "linkis.fullname" . }}-update-sql
+            items:
+              - key: update_dml.sql
+                path: update_dml.sql
       containers:
         - name: init-db
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          volumeMounts:
+            - name: init-db
+              mountPath: /db
           command:
             - /bin/bash
             - -ecx
@@ -32,6 +42,8 @@ spec:
               mysql -h{{ .Values.linkis.datasource.host }} -P{{ .Values.linkis.datasource.port }} -u{{ .Values.linkis.datasource.username }} -p{{ .Values.linkis.datasource.password }} --default-character-set=utf8 -e "CREATE DATABASE IF NOT EXISTS {{ .Values.linkis.datasource.database }} DEFAULT CHARSET utf8 COLLATE utf8_general_ci";
               mysql -h{{ .Values.linkis.datasource.host }} -P{{ .Values.linkis.datasource.port }} -u{{ .Values.linkis.datasource.username }} -p{{ .Values.linkis.datasource.password }} -D{{ .Values.linkis.datasource.database }}  --default-character-set=utf8 -e "source {{ .Values.linkis.locations.homeDir }}/db//linkis_ddl.sql";
               mysql -h{{ .Values.linkis.datasource.host }} -P{{ .Values.linkis.datasource.port }} -u{{ .Values.linkis.datasource.username }} -p{{ .Values.linkis.datasource.password }} -D{{ .Values.linkis.datasource.database }}  --default-character-set=utf8 -e "source {{ .Values.linkis.locations.homeDir }}/db//linkis_dml.sql"
+              # for special dml
+              mysql -h{{ .Values.linkis.datasource.host }} -P{{ .Values.linkis.datasource.port }} -u{{ .Values.linkis.datasource.username }} -p{{ .Values.linkis.datasource.password }} -D{{ .Values.linkis.datasource.database }}  --default-character-set=utf8 -e "source /db/update_dml.sql";
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
